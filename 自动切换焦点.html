@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	
+	</head>
+	<body>
+	<form>
+		<input type="text" name="tel1" id="txtTell1" maxlength="3" />
+		<input type="text" name="tel2" id="txtTell2" maxlength="3"/>
+		<input type="text" name="tel3" id="txtTell3" maxlength="4"/>
+	</form>
+		
+<script type="text/javascript">
+window.onload = function(){
+	var EventUtil = {
+		
+	addHandler: function(element,type,handler){
+		if(element.addEventListener) {
+			element.addEventListener(type,handler,false);
+		} else if(element.attachEvent) {
+			element.attachEvent("on"+type, handler);
+		}else {
+			element["on"+type]=handler;
+		}
+	},
+	removeHandler: function(element,type,handler){
+		if(element.addEventListener) {
+			element.removeEventListener(type,handler,false);
+		} else if(element.attachEvent) {
+			element.detachEvent("on"+type, handler);
+		}else {
+			element["on"+type] = null;
+		}
+	},
+
+		 getEvent: function(event){
+              return event ? event: window.event;
+          },
+
+         getTarget: function(){
+             return event.target || event.srcElement;
+         },
+          /*通过比较用户输入的值与文本框的maxlength特性，确定是否达到最大长度
+ 30         当两个值相等时，则需要查找表单字段的集合，查找到下一个文本框后将焦点切换
+ 3        */
+         preventDefault: function(){
+             if(event.preventDefault){
+                event.preventDefault();
+              }else{
+                  event.returnValue = false;
+              }
+         },
+        stopPropagation: function(){
+             if(event.stopPropagation){
+                 event.stopPropagation();
+             }else{
+                 event.cancelBuddle = true;
+            }
+          },
+    
+         getCharCode:function(event){
+             if(typeof event.charCode == "number"){
+                 return event.charCode;
+             }else{
+                  return event.keyCode;
+              }
+          },
+         //处理字符编码
+    }
+	
+    var textarea = document.forms[0].elements["text"];
+    var button = document.getElementById("button");
+		(function(){
+			 function tabForward(event){     //event事件对象传到事件处理程序中去
+            event = EventUtil.getEvent(event);    //把event传给getEvent()方法
+            var target = EventUtil.getTarget(event);
+			  if(target.value.length == target.maxLength) {    //达到最大长度
+                var form = target.parentElement;
+
+                for(var i=0, len=form.elements.length; i<len-1; i++)
+                {
+                    if(form.elements[i] == target){
+                        form.elements[i+1].focus();  //切换焦点
+                        return;
+						}
+						
+					}
+				}
+			}
+			var textbox1 = document.getElementById("txtTell1");
+			var textbox2 = document.getElementById("txtTell2");
+			var textbox3 = document.getElementById("txtTell3");
+			
+			EventUtil.addHandler(textbox1,"keyup",tabForward);
+			EventUtil.addHandler(textbox2,"keyup",tabForward);
+			EventUtil.addHandler(textbox3,"keyup",tabForward);
+	
+   })();
+}	
+		</script>
+	</body>
+</html>
